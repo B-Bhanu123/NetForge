@@ -1,0 +1,4 @@
+urllib3==2.2.1
+requests==2.31.0
+prometheus-client==0.20.0
+pytest==8.1.1

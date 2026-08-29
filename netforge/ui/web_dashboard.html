@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetForge Enterprise Telemetry & Topology Dashboard</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #121824;
+            --card-bg: #1a2233;
+            --accent-blue: #0088ff;
+            --accent-cyan: #00d8ff;
+            --accent-green: #00e676;
+            --accent-orange: #ff9100;
+            --accent-red: #ff3d00;
+            --text-primary: #f0f4f8;
+            --text-secondary: #8a99ad;
+            --border-color: #2a364f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: var(--bg-secondary);
+            border-bottom: 2px solid var(--accent-blue);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            background: rgba(0, 230, 118, 0.15);
+            color: var(--accent-green);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid var(--accent-green);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--accent-blue);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .metric-val {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--text-primary);
+        }
+
+        .metric-sub {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .canvas-container {
+            width: 100%;
+            height: 350px;
+            background: #080c14;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--bg-secondary);
+            color: var(--accent-cyan);
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">⚡ NetForge Enterprise Dashboard</div>
+        <div class="status-badge">● Engine Online</div>
+    </header>
+
+    <div class="grid-layout">
+        <div class="card">
+            <div class="card-header">Network Throughput</div>
+            <div class="metric-val" id="throughput-val">12.45 Gbps</div>
+            <div class="metric-sub">▲ 8.3% increase in packet ingestion rate</div>
+        </div>
+        <div class="card">
+            <div class="card-header">Active TCP/UDP Flows</div>
+            <div class="metric-val" id="flows-val">142,890</div>
+            <div class="metric-sub">5-Tuple stateful tracking active</div>
+        </div>
+        <div class="card">
+            <div class="card-header">Average Packet Latency</div>
+            <div class="metric-val" id="latency-val">1.24 ms</div>
+            <div class="metric-sub">Zero-copy ring buffer latency optimized</div>
+        </div>
+        <div class="card">
+            <div class="card-header">DPI Security Rule Matches</div>
+            <div class="metric-val" id="dpi-val">0 Threats</div>
+            <div class="metric-sub">Stateful firewall rules filtering clean</div>
+        </div>
+    </div>
+
+    <div class="grid-layout" style="grid-template-columns: 2fr 1fr;">
+        <div class="card">
+            <div class="card-header">Live Topology Node Mesh Graph</div>
+            <div class="canvas-container" id="mesh-container">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="100" y1="100" x2="300" y2="150" stroke="#0088ff" stroke-width="2" />
+                    <line x1="300" y1="150" x2="500" y2="100" stroke="#0088ff" stroke-width="2" />
+                    <line x1="300" y1="150" x2="300" y2="280" stroke="#00d8ff" stroke-dasharray="5,5" stroke-width="2" />
+                    <circle cx="100" cy="100" r="18" fill="#1a2233" stroke="#0088ff" stroke-width="3" />
+                    <text x="92" y="105" fill="#fff" font-size="12">R1</text>
+                    <circle cx="300" cy="150" r="22" fill="#1a2233" stroke="#00d8ff" stroke-width="3" />
+                    <text x="290" y="155" fill="#fff" font-size="12">Core</text>
+                    <circle cx="500" cy="100" r="18" fill="#1a2233" stroke="#0088ff" stroke-width="3" />
+                    <text x="492" y="105" fill="#fff" font-size="12">R2</text>
+                    <circle cx="300" cy="280" r="18" fill="#1a2233" stroke="#00e676" stroke-width="3" />
+                    <text x="292" y="285" fill="#fff" font-size="12">S1</text>
+                </svg>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">Protocol Breakdown</div>
+            <table>
+                <thead>
+                    <tr><th>Protocol</th><th>Flows</th><th>Ratio</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>HTTPS/TLS</td><td>84,210</td><td>58.9%</td></tr>
+                    <tr><td>HTTP/2</td><td>29,140</td><td>20.4%</td></tr>
+                    <tr><td>DNS</td><td>18,400</td><td>12.8%</td></tr>
+                    <tr><td>MQTT</td><td>6,140</td><td>4.3%</td></tr>
+                    <tr><td>ICMP/Other</td><td>5,000</td><td>3.6%</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

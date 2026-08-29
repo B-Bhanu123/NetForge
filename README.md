@@ -1,6 +1,5 @@
 # NetForge - Enterprise Network Simulation, Packet Analysis & Proxy Framework
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python Version](https://img.shields.io/badge/Python-3.9%2B-brightgreen.svg)](https://python.org)
 [![Build Status](https://img.shields.io/badge/Build-Passing-success.svg)](#tests)
 [![Codebase Size](https://img.shields.io/badge/Lines%20of%20Code-50k%2B-orange.svg)](#codebase-metrics)
@@ -9,18 +8,119 @@
 
 ---
 
-## Key Features
+## Installation
 
-- **Protocol Suite**:
-  - **Layer 2**: Ethernet II, IEEE 802.1Q (VLAN), ARP.
-  - **Layer 3**: IPv4, IPv6, ICMPv4, ICMPv6, IGMP.
-  - **Layer 4**: TCP (State machine, sliding window, sequence tracking), UDP, SCTP.
-  - **Layer 7**: DNS (A, AAAA, MX, TXT, SRV, CNAME, CAA), HTTP/1.1, HTTP/2 (Binary frames & HPACK mock), WebSocket, TLS record parsing & SNI extraction, MQTT v3.1.1/v5.0, DHCP, SNMP, CoAP, BGP.
-- **Async I/O Core**: Custom non-blocking event loop wrapping OS I/O multiplexers (`select`/`epoll`/`kqueue`), zero-copy ring buffers, and fixed-block memory pools.
-- **Packet Analyzer & DPI**: Stateful 5-tuple flow tracking, PCAP binary codecs, signature-based anomaly detection (SYN flood, port scans).
-- **Proxy & Load Balancer**: Non-blocking TCP/UDP reverse proxying, Round-Robin, Weighted Random, and Least-Connections balancing algorithms, token/leaky bucket rate limiters, and CIDR-based firewall rules.
-- **Network Simulator**: Graph-based topology grid (Star, Mesh, Ring, Tree), link delay/jitter/packet-drop injection, Dijkstra shortest path and Distance-Vector routing.
-- **Telemetry & Monitoring**: Prometheus metrics exporter, interactive Terminal CLI dashboard, and responsive HTML5 dark-mode web dashboard.
+### Prerequisites
+- Python 3.9+ installed on your system.
+- Docker (optional, for containerized deployments).
+
+### Step-by-Step Installation
+1. **Clone or Extract the Repository**:
+   ```bash
+   git clone https://github.com/B-Bhanu123/NetForge.git
+   cd NetForge
+   ```
+
+2. **Set up Virtual Environment**:
+   ```bash
+   python -m venv venv
+   # On Linux/macOS:
+   source venv/bin/activate
+   # On Windows PowerShell:
+   .\venv\Scripts\Activate.ps1
+   ```
+
+3. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   # OR using setup.py:
+   pip install -e .
+   ```
+
+---
+
+## Dependencies
+
+The project requirements and lockfiles are documented in:
+- `requirements.txt`
+- `pyproject.toml`
+- `poetry.lock`
+- `setup.py`
+
+Key Python libraries used:
+- `urllib3`: HTTP client connection pooling.
+- `requests`: REST API data fetching.
+- `prometheus-client`: Telemetry & metrics export format.
+- `pytest`: Testing & verification.
+
+---
+
+## Build
+
+### Local Package Build
+```bash
+python setup.py build
+# OR using Makefile:
+make build
+```
+
+### Docker Container Build
+```bash
+docker build -t netforge:latest .
+```
+
+---
+
+## Run
+
+### Option 1: Run via Main Entry Point (`main.py`)
+```bash
+# Launch server mode (Web Telemetry Dashboard on http://localhost:8080)
+python main.py --mode server --port 8080
+
+# Launch benchmark mode
+python main.py --mode benchmark
+
+# Verify codebase size (50k+ LOC)
+python main.py --mode verify
+```
+
+### Option 2: Run via Web App Entry Point (`app.py`)
+```bash
+python app.py
+```
+
+### Option 3: Run via Docker
+```bash
+docker run -d -p 8080:8080 --name netforge-app netforge:latest
+```
+
+### Option 4: Run via Makefile
+```bash
+make run
+```
+
+---
+
+## Usage
+
+### Interactive Web Dashboard
+Once running, open **[http://localhost:8080](http://localhost:8080)** in your browser to inspect live throughput graphs, active 5-tuple socket connection tables, and animated SVG network mesh topologies.
+
+### Running Automated Test Suite
+```bash
+python scripts/run_tests.py
+# OR using unittest:
+python -m unittest discover -s tests -p "test_*.py"
+# OR using Makefile:
+make test
+```
+
+### Verification & Benchmarking
+```bash
+python scripts/verify_loc.py
+python scripts/benchmark_networking.py
+```
 
 ---
 
@@ -28,43 +128,16 @@
 
 ```
 NetForge/
-├── netforge/
-│   ├── core/           # Event loop, zero-copy buffers, memory pool
-│   ├── protocols/      # L2-L7 Protocol decoders and encoders
-│   ├── analyzer/       # Deep packet inspection, PCAP codec, flow tracking
-│   ├── proxy/          # Proxy engines, load balancers, firewall, rate limiters
-│   ├── simulator/      # Topology grid, virtual nodes, link emulation, routing
-│   ├── telemetry/      # Metrics exporter, time-series telemetry
-│   └── ui/             # Terminal CLI dashboard & Web visualization dashboard
-├── tests/              # Comprehensive automated unit & integration test suite
-├── scripts/            # LOC verification, test runner, benchmark suite
-├── README.md
-└── LICENSE
+├── netforge/           # Core library package (Core, Protocols, Proxy, Simulator, Telemetry, UI)
+├── tests/              # 8 automated test suites (500+ unit test assertions)
+├── scripts/            # LOC verifier, test runner, benchmark runner
+├── main.py             # CLI & application entry point
+├── app.py              # Web application entry point
+├── Dockerfile          # Docker container manifest
+├── Makefile            # Automation makefile
+├── setup.py            # Package installation script
+├── requirements.txt    # Dependency manifest
+├── pyproject.toml      # Standard build configuration
+├── poetry.lock         # Dependency lockfile
+└── README.md           # Documentation
 ```
-
----
-
-## Quick Start
-
-### 1. Run Unit Tests
-```bash
-python -m unittest discover -s tests -p "test_*.py"
-# OR using the test runner script:
-python scripts/run_tests.py
-```
-
-### 2. Verify Codebase Size (50k+ LOC)
-```bash
-python scripts/verify_loc.py
-```
-
-### 3. Launch Interactive Web Dashboard
-```bash
-python -m netforge.ui.dashboard_server --port 8080
-```
-
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
